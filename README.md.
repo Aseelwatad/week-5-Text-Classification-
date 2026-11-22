@@ -1,1 +1,163 @@
-Week Five - Text Classification.
+# News Text Classification Using TF-IDF and Logistic Regression
+
+## Project Overview
+
+This project focuses on building a machine learning model to classify news articles into five categories using Natural Language Processing (NLP) techniques.
+
+The project is part of **Week 5 – Text Classification** of the AI Field Training program.
+
+The main objective is to convert text into numerical features using TF-IDF, train a Logistic Regression classifier, and evaluate its performance on unseen news articles.
+
+## Dataset
+
+The dataset was prepared during the previous Exploratory Data Analysis (EDA) and text preprocessing stage.
+
+**Input file:** `news_preprocessed.csv`
+
+The dataset contains three columns:
+
+| Column | Description |
+|---|---|
+| `Text` | Original news article |
+| `Label` | News category (0–4) |
+| `normalized_text` | Normalized article text |
+
+The dataset initially contained 2,127 articles after the EDA stage.
+
+During classification preparation, three additional duplicate normalized texts were removed, leaving **2,124 articles**.
+
+## Classification Workflow
+
+### 1. Data Loading and Inspection
+
+- Loaded the preprocessed dataset using Pandas.
+- Checked dataset dimensions and missing values.
+- Examined class distribution.
+- Checked for duplicate and empty normalized texts.
+- Removed duplicate normalized texts before splitting the data.
+
+### 2. Feature and Target Selection
+
+The normalized text was selected as the input feature, while the category label was used as the target variable.
+
+- **X:** `normalized_text`
+- **y:** `Label`
+
+The classification task contains five classes.
+
+### 3. Train-Test Split
+
+The dataset was divided into training and testing sets using an 80/20 split.
+
+| Dataset | Number of Articles |
+|---|---:|
+| Training Set | 1,699 |
+| Testing Set | 425 |
+| Total | 2,124 |
+
+The split used:
+
+- `test_size=0.2`
+- `random_state=42`
+- `stratify=y`
+
+Stratification was applied to preserve the class distribution across the training and testing sets.
+
+### 4. TF-IDF Feature Extraction
+
+TF-IDF (Term Frequency–Inverse Document Frequency) was used to convert news articles into numerical features.
+
+The vectorizer was fitted only on the training data to prevent data leakage.
+
+- `fit_transform()` was applied to the training data.
+- `transform()` was applied to the testing data.
+
+**TF-IDF Matrix Shapes:**
+
+| Dataset | Shape |
+|---|---|
+| Training | (1699, 26849) |
+| Testing | (425, 26849) |
+
+The vectorizer generated **26,849 text features** from the training vocabulary.
+
+### 5. Model Training
+
+A **Logistic Regression** classifier was trained using the TF-IDF features.
+
+```python
+from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression(max_iter=1000)
+
+model.fit(X_train_tfidf, y_train)
+
+y_pred = model.predict(X_test_tfidf)
+```
+
+Logistic Regression was selected because it is an efficient and interpretable baseline algorithm for text classification, particularly with high-dimensional sparse features.
+
+### 6. Model Evaluation
+
+The trained model was evaluated using:
+
+- Accuracy
+- Macro F1-score
+- Weighted F1-score
+- Precision and Recall
+- Classification Report
+
+## Model Results
+
+The Logistic Regression model achieved the following results on the test set:
+
+| Evaluation Metric | Score |
+|---|---:|
+| Accuracy | **96.94%** |
+| Macro F1-score | **96.94%** |
+| Weighted F1-score | **96.93%** |
+
+Out of 425 test articles:
+
+- **412 articles** were correctly classified.
+- **13 articles** were incorrectly classified.
+
+### Classification Report
+
+| Class | Precision | Recall | F1-score | Support |
+|---|---:|---:|---:|---:|
+| 0 | 0.99 | 0.93 | 0.96 | 81 |
+| 1 | 0.96 | 0.99 | 0.98 | 100 |
+| 2 | 0.97 | 0.97 | 0.97 | 69 |
+| 3 | 0.99 | 0.97 | 0.98 | 74 |
+| 4 | 0.95 | 0.98 | 0.97 | 101 |
+
+## Key Findings
+
+- The model achieved a high classification accuracy of 96.94%.
+- Performance was relatively consistent across all five classes.
+- Classes 1 and 3 achieved the highest reported F1-scores (0.98).
+- Class 0 had the lowest recall (0.93), indicating that some articles belonging to this class were incorrectly classified.
+- Macro F1 and Weighted F1 were very close, suggesting relatively balanced performance across categories.
+- TF-IDF combined with Logistic Regression provided a strong baseline for news classification.
+
+## Technologies Used
+
+- Python
+- Pandas
+- Scikit-learn
+- TF-IDF Vectorizer
+- Logistic Regression
+- Jupyter Notebook
+
+
+## Conclusion
+
+This project successfully developed a baseline news classification model using TF-IDF and Logistic Regression.
+
+The model achieved **96.94% accuracy** and **96.94% Macro F1-score** on unseen test data.
+
+These results demonstrate that TF-IDF and Logistic Regression can provide strong performance for multiclass news classification.
+
+The baseline will be used as a reference for evaluating future preprocessing improvements.
+
