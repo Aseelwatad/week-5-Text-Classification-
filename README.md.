@@ -1,1 +1,163 @@
-Week Five - Text Classification.
+# News Articles — Exploratory Data Analysis & Text Preprocessing
+
+## Overview
+
+This notebook explores a labeled news-article dataset and investigates text quality and preprocessing techniques as part of an AI field-training project.
+
+The goal is to understand the data, identify issues that could affect classification, and prepare a normalized text dataset for later modeling.
+
+**Notebook:** `week5-EDA.ipynb`  
+**Input:** `df_file.csv`  
+**Output:** `news_preprocessed.csv`
+
+## Dataset
+
+The original dataset contains **2,225 news articles** with two columns:
+
+| Column | Description |
+| --- | --- |
+| `Text` | News article text |
+| `Label` | Integer category label (0–4) |
+
+Initial checks found no missing values and no empty or whitespace-only articles.
+
+The notebook identified and removed **98 duplicate rows**, leaving **2,127 articles**.
+
+### Class Distribution
+
+| Label | Articles |
+| --- | ---: |
+| 0 | 403 |
+| 1 | 505 |
+| 2 | 347 |
+| 3 | 369 |
+| 4 | 503 |
+
+## EDA Workflow
+
+### 1. Data Inspection
+
+- Loaded the dataset using Pandas.
+- Examined dataset shape, columns, and data types.
+- Checked missing values and empty text entries.
+- Identified and removed duplicate records.
+- Analyzed class distribution.
+
+### 2. Text Length and Vocabulary Analysis
+
+- Calculated character counts and word counts.
+- Visualized article length distribution.
+- Analyzed word frequencies.
+- Identified the most frequent words.
+
+The initial analysis found:
+
+- **817,008 word occurrences**
+- **60,616 distinct whitespace-separated word forms**
+
+Common words such as *the*, *to*, and *of* appeared frequently.
+
+### 3. Language and Noise Detection
+
+Used `langdetect` to estimate the primary language of each article.
+
+Regular expressions were used to identify possible text quality issues.
+
+| Check | Articles Flagged |
+| --- | ---: |
+| URLs | 2 |
+| Digits | 2,023 |
+| Special characters | 2,127 |
+| Potential encoding artifacts | 618 |
+
+These checks identify articles matching specific patterns. Potential encoding artifacts require further inspection.
+
+### 4. Text Normalization
+
+Created a `normalize_text()` function to:
+
+- Convert text to lowercase.
+- Remove URLs.
+- Normalize extra whitespace and line breaks.
+- Remove leading and trailing spaces.
+
+The normalized results were stored in a new column called `normalized_text`.
+
+The original text and labels were preserved.
+
+### 5. NLP Preprocessing Experiments
+
+Explored several NLP preprocessing techniques using spaCy:
+
+- **Tokenization:** Splitting text into individual tokens.
+- **Stopword Removal:** Removing common words that may contribute limited information.
+- **Lemmatization:** Converting words to their base forms.
+
+These techniques were explored separately to understand their effects.
+
+The final exported dataset uses normalized text rather than fully cleaned text.
+
+## Exported Dataset
+
+The processed dataset was saved as:
+
+`news_preprocessed.csv`
+
+It contains three columns:
+
+- `Text` — Original news article
+- `Label` — News category
+- `normalized_text` — Normalized article text
+
+The exported dataset contains **2,127 articles**.
+
+This dataset will be used for TF-IDF feature extraction and machine learning classification.
+
+## Technologies Used
+
+- Python
+- Pandas
+- Matplotlib
+- Regular Expressions (Regex)
+- spaCy
+- langdetect
+- Jupyter Notebook
+
+## How to Run
+
+1. Install the required Python libraries:
+
+```bash
+pip install pandas matplotlib langdetect spacy notebook
+python -m spacy download en_core_web_sm
+```
+
+2. Place `df_file.csv` in the project directory.
+
+3. Open `week5-EDA.ipynb` in Jupyter Notebook or VS Code.
+
+4. Update the dataset file path if necessary.
+
+5. Run the notebook cells in order.
+
+## Key Findings
+
+- The dataset originally contained 2,225 articles.
+- No missing or empty article texts were detected.
+- Removing 98 duplicate records reduced the dataset to 2,127 articles.
+- The five classes contain different numbers of articles.
+- Common English words appeared frequently in the vocabulary.
+- Some articles contained URLs, digits, special characters, or potential encoding issues.
+- Text normalization provided a consistent starting point for machine learning experiments.
+
+## Next Steps
+
+The normalized dataset will be used to train a news classification model using **TF-IDF and Logistic Regression**.
+
+Additional preprocessing techniques, including stopword removal and lemmatization, can be compared against the normalized-text baseline to evaluate their impact on classification performance.
+
+## Conclusion
+
+This project demonstrates the importance of Exploratory Data Analysis and text preprocessing before training machine learning models.
+
+The analysis helped identify data quality issues, understand text characteristics, and prepare a normalized dataset for future classification experiments.
